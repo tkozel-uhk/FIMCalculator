@@ -1,17 +1,20 @@
 package cz.uhk.umte.fimcalculator
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * Třída pro správu stavu a logiky kalkulačky.
- * Finální fáze s implementací výpočtů.
+ * Třída pro správu stavu a logiky kalkulačky založená na StateFlow.
  */
 class CalculatorViewModel : ViewModel() {
-    var displayText by mutableStateOf("0")
-        private set
+    
+    // Interní mutovatelný stav
+    private val _displayText = MutableStateFlow("0")
+    
+    // Veřejný neměnný proud stavu pro UI
+    val displayText: StateFlow<String> = _displayText.asStateFlow()
 
     private var operand1: Double? = null
     private var operator: String? = null
@@ -28,14 +31,14 @@ class CalculatorViewModel : ViewModel() {
     }
 
     private fun reset() {
-        displayText = "0"
+        _displayText.value = "0"
         operand1 = null
         operator = null
         isNewNumber = true
     }
 
     private fun setOperator(newOperator: String) {
-        operand1 = displayText.toDoubleOrNull()
+        operand1 = _displayText.value.toDoubleOrNull()
         operator = newOperator
         isNewNumber = true
     }
@@ -43,7 +46,7 @@ class CalculatorViewModel : ViewModel() {
     private fun calculateResult() {
         val op1 = operand1
         val op = operator
-        val op2 = displayText.toDoubleOrNull()
+        val op2 = _displayText.value.toDoubleOrNull()
 
         if (op1 != null && op != null && op2 != null) {
             val result = when (op) {
@@ -62,28 +65,28 @@ class CalculatorViewModel : ViewModel() {
 
     private fun appendNumber(number: String) {
         if (isNewNumber) {
-            displayText = number
+            _displayText.value = number
             isNewNumber = false
         } else {
-            if (displayText == "0") {
-                displayText = number
+            if (_displayText.value == "0") {
+                _displayText.value = number
             } else {
-                displayText += number
+                _displayText.value += number
             }
         }
     }
 
     private fun appendDot() {
         if (isNewNumber) {
-            displayText = "0."
+            _displayText.value = "0."
             isNewNumber = false
-        } else if (!displayText.contains(".")) {
-            displayText += "."
+        } else if (!_displayText.value.contains(".")) {
+            _displayText.value += "."
         }
     }
 
     private fun formatResult(result: Double) {
-        displayText = when {
+        _displayText.value = when {
             result.isNaN() -> "Error"
             result % 1.0 == 0.0 -> result.toLong().toString()
             else -> result.toString()

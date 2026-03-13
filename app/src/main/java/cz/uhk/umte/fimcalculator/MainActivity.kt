@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,13 +60,16 @@ fun Calculator(
     modifier: Modifier = Modifier,
     viewModel: CalculatorViewModel = viewModel()
 ) {
+    // Kolekce StateFlow do Compose stavu
+    val displayText by viewModel.displayText.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
         CalculatorDisplay(
-            value = viewModel.displayText
+            value = displayText
         )
         CalculatorKeyboard(
             onKeyClick = { viewModel.onKeyClick(it) },
