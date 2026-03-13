@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -106,9 +107,14 @@ fun CalculatorKeyboard(onKeyClick: (String) -> Unit, modifier: Modifier = Modifi
         listOf("0", ".", "C", "+")
     )
 
-    Column {
+    Column (
+        modifier = modifier,
+        verticalArrangement = Arrangement.SpaceEvenly
+        ) {
         keys.forEach { row ->
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 row.forEach { key ->
                     Button(
                         onClick = { onKeyClick(key) },
@@ -116,7 +122,10 @@ fun CalculatorKeyboard(onKeyClick: (String) -> Unit, modifier: Modifier = Modifi
                             .weight(1f)
                             .padding(4.dp)
                     ) {
-                        Text(text = key, style = MaterialTheme.typography.titleLarge)
+                        Text(
+                            text = key,
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 36.sp)
+                        )
                     }
                 }
             }
@@ -127,7 +136,7 @@ fun CalculatorKeyboard(onKeyClick: (String) -> Unit, modifier: Modifier = Modifi
                 .fillMaxWidth()
                 .padding(4.dp)
         ) {
-            Text(text = "=", style = MaterialTheme.typography.titleLarge)
+            Text(text = "=", style = MaterialTheme.typography.titleLarge.copy(fontSize = 36.sp))
         }
     }
 }
